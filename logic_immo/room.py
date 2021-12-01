@@ -18,13 +18,13 @@ def get_rooms(var):
     headers = {'User-Agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36'}
     room_clean = []
     for i in range(0, len(var)):
-        page = requests.get(var[i], headers=headers)
-        print(page)
-        soup = BeautifulSoup(page.text, "html.parser")
+        page = requests.get(var[i], headers=headers) #SUPP
+        soup = BeautifulSoup(page.text, "html.parser") #Page take in argument a page stored on the database on gcp
         room = soup.find("em", {"class": "feature mobileOnly"})
         for i in room:
             regex = re.compile(r'[a-z]\.')
             room_clean.append(regex.sub(" ", i.text))
+            # Export to database 
         sleep(1.1)
     return(room_clean)
 

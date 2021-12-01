@@ -17,7 +17,7 @@ def get_description(var):
     headers = {'User-Agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36'}
     description_clean = []
     for i in range(0, len(var)):
-        page = requests.get(var[i], headers=headers)
+        page = requests.get(var[i], headers=headers) #Import for drive
         print(page)
         soup = BeautifulSoup(page.text, "html.parser")
         description = soup.find("p", {"class": "descrProperty"})
