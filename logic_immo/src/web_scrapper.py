@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+from time import sleep
 
 class WebScrapper():
     def __init__(self, url):
@@ -41,11 +42,21 @@ class WebScrapper():
 
     def get_all_pages_links(self):
         """Get all the apartment ads links
+        :return: total links of all pages
+        :rtype: list
         """
-        None
+        for i in range(0, self.get_page_number(self.url)):
+            soup = BeautifulSoup(self.get_html_page(i).text, "html.parser")
+            links = soup.find_all('a', {"class": "linkToFa"})
+            for j in links:
+                self.links.append(j['href'])
+            sleep(1.1)
+        return self.links
 
     def export_to_gcs(self):
         """Export the HTML to Google Cloud Storage
         """
         None
+
+
 
