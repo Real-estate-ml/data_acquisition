@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 from time import sleep
 from pathlib import Path
+from datetime import date
 
 class WebScrapper():
     def __init__(self, url):
@@ -79,9 +80,15 @@ class WebScrapper():
     def export_to_gcs(self):
         """Export the HTML to Google Cloud Storage
         """
-        Path("export/html").mkdir(parents=True, exist_ok=True)
-        for link in self.links:
+        EXPORT_FOLDER = "export/html"
+        Path(EXPORT_FOLDER).mkdir(parents=True, exist_ok=True)
+        for index, link in enumerate(self.links, start=1):
             ad_page = self.get_apartment_ad(link)
+            today = date.today()
+            date = today.strftime("%d-%m-%Y")
+            filename = "{}/apartment_ad_{}_{}.html".format(EXPORT_FOLDER, index, date)
+            with open(filename, "w") as file:
+                file.write(ad_page)
             sleep(3)
             
 
