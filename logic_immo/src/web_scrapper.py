@@ -40,8 +40,7 @@ class WebScrapper():
         """
         headers = {'User-Agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36'}
         page = requests.get(link, headers=headers)
-        print(page)
-        #return page.text
+        return page.text
 
     def set_last_page_number(self, home_page):
         """The aim of this function is to return the number of page from logic_immo website in order to get all the real-estate ads
@@ -84,9 +83,10 @@ class WebScrapper():
         Path(EXPORT_FOLDER).mkdir(parents=True, exist_ok=True)
         for index, link in enumerate(self.links, start=1):
             ad_page = self.get_apartment_ad(link)
+            print(ad_page)
             today = date.today()
-            date = today.strftime("%d-%m-%Y")
-            filename = "{}/apartment_ad_{}_{}.html".format(EXPORT_FOLDER, index, date)
+            date_of_day = today.strftime("%d-%m-%Y")
+            filename = "{}/apartment_ad_{}_{}.html".format(EXPORT_FOLDER, index, date_of_day)
             with open(filename, "w") as file:
                 file.write(ad_page)
             sleep(3)
