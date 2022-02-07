@@ -7,7 +7,8 @@ __pycache__/
 *.so
 
 # Export folders
-logic_immo/export/
+logic_immo/Ban_1060_ads/
+
 
 # Distribution / packaging
 .Python
@@ -130,3 +131,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+
+**/.DS_Store

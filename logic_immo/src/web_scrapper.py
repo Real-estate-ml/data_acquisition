@@ -3,13 +3,23 @@ import requests
 from time import sleep
 from pathlib import Path
 from datetime import date
+from random import randint
+from google.cloud import storage
 
 class WebScrapper():
     def __init__(self, url):
         self.url = url
         self.nb_pages = 0
         self.links = []
-    
+
+    # def request_page(self, url):
+    #     headers = {'User-Agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36'}
+    #     try:
+    #         page = requests.get(url, headers=headers)
+    #         return page
+    #     except Exception as e:
+    #         print(e)
+
     def get_html_page(self, page_number):
         """Get the BeautifulSoup object of an HTML page
         If page_number is None, then just use the base url passed as parameter 
@@ -21,7 +31,6 @@ class WebScrapper():
         :rtype: BeautifulSoup
         """
         headers = {'User-Agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36'}
-        current_url = ""
         if page_number != None:
             current_url = self.url + "/page={}".format(str(page_number))
         else:
@@ -30,14 +39,18 @@ class WebScrapper():
         html_soup = BeautifulSoup(page.text, "html.parser")
         return html_soup
 
+    # Vérifier la validité de chaque page html
+    # get data check si c'est valide si pas valide exception
+    #def get_validity_html_page(html_page):
+
     def get_apartment_ad(self, link: str):
         """[summary]
-
         :param link: [description]
         :type link: str
         :return: [description]
         :rtype: [type]
         """
+        sleep(randint(8, 14))
         headers = {'User-Agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36'}
         page = requests.get(link, headers=headers)
         return page.text
@@ -60,9 +73,10 @@ class WebScrapper():
         for i in range(1, self.nb_pages+1):
             html_page = self.get_html_page(i)
             page_links = self.get_all_links_for_page(html_page)
+            sleep(randint(12, 20))
             for link in page_links:
                 self.links.append(link)
-            sleep(3)
+
 
     def get_all_links_for_page(self, html_page):
         """Get all the links for a given page
@@ -79,32 +93,13 @@ class WebScrapper():
     def export_to_gcs(self):
         """Export the HTML to Google Cloud Storage
         """
-        EXPORT_FOLDER = "export/html"
-        Path(EXPORT_FOLDER).mkdir(parents=True, exist_ok=True)
         for index, link in enumerate(self.links, start=1):
             ad_page = self.get_apartment_ad(link)
-            print(ad_page)
             today = date.today()
             date_of_day = today.strftime("%d-%m-%Y")
-            filename = "{}/apartment_ad_{}_{}.html".format(EXPORT_FOLDER, index, date_of_day)
-            with open(filename, "w") as file:
-                file.write(ad_page)
-            sleep(3)
-            
-
-# Test
-BASE_URL = "https://www.logic-immo.com/vente-immobilier-ile-de-france,1_0/options/groupprptypesids=1"
-web_scrapper = WebScrapper(BASE_URL)
-
-# Set total number of pages
-home_page = web_scrapper.get_html_page(None)
-web_scrapper.set_last_page_number(home_page)
-print("There are {} pages".format(web_scrapper.nb_pages))
-
-# Set all links
-web_scrapper.nb_pages = 2
-web_scrapper.set_all_pages_links()
-
-# Export all links
-web_scrapper.export_to_gcs()
-
+            filename = "apartment_ad_{}_{}.html".format(index, date_of_day)
+            client = storage.Client()
+            bucket = client.get_bucket('ml-esme-real-estate-data')
+            blob = bucket.blob("logic-immo/" + filename)
+            blob.upload_from_string(ad_page)
+            print(filename)
