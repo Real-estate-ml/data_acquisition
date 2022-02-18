@@ -1,7 +1,13 @@
 from web_scrapper import WebScrapper
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--page', required=True, help='Page number to scrape')
+args = parser.parse_args()
+page = args.page
 
 # Test
-BASE_URL = "https://www.logic-immo.com/vente-immobilier-ile-de-france,1_0/options/groupprptypesids=1"
+BASE_URL = "https://www.logic-immo.com/vente-immobilier-paris-75,100_1/options/groupprptypesids=1/page="+page
 web_scrapper = WebScrapper(BASE_URL)
 
 # Set total number of pages
