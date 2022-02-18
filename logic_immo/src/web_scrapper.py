@@ -7,18 +7,11 @@ from random import randint
 from google.cloud import storage
 
 class WebScrapper():
-    def __init__(self, url):
+    def __init__(self, url, start_page, end_page):
         self.url = url
-        self.nb_pages = 0
         self.links = []
-
-    # def request_page(self, url):
-    #     headers = {'User-Agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36'}
-    #     try:
-    #         page = requests.get(url, headers=headers)
-    #         return page
-    #     except Exception as e:
-    #         print(e)
+        self.start_page = start_page
+        self.end_page = end_page
 
     def get_html_page(self, page_number):
         """Get the BeautifulSoup object of an HTML page
@@ -31,49 +24,32 @@ class WebScrapper():
         :rtype: BeautifulSoup
         """
         headers = {'User-Agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36'}
-        if page_number != None:
-            current_url = self.url + "/page={}".format(str(page_number))
-        else:
-            current_url = self.url
+        current_url = self.url + "/page={}".format(str(page_number))
         page = requests.get(current_url, headers=headers)
         html_soup = BeautifulSoup(page.text, "html.parser")
         return html_soup
 
-    # Vérifier la validité de chaque page html
-    # get data check si c'est valide si pas valide exception
-    #def get_validity_html_page(html_page):
-
-    def get_apartment_ad(self, link: str):
+    def get_apartment_ad(self, link):
         """[summary]
         :param link: [description]
         :type link: str
         :return: [description]
         :rtype: [type]
         """
-        sleep(randint(8, 14))
+        sleep(randint(2, 3))
         headers = {'User-Agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36'}
         page = requests.get(link, headers=headers)
         return page.text
-
-    def set_last_page_number(self, home_page):
-        """The aim of this function is to return the number of page from logic_immo website in order to get all the real-estate ads
-        :param home_page: home page
-        :type home_page: BeautifulSoup object
-        """
-        number = home_page.find("h1", {"class": "titleSearch"}).text
-        numbers = [int(nbr) for nbr in number.split() if nbr.isdigit()]
-        pages_number = int(numbers[0]/20)
-        self.nb_pages = pages_number
 
     def set_all_pages_links(self):
         """Get all the apartment ads links
         :return: total links of all pages
         :rtype: list
         """
-        for i in range(1, self.nb_pages+1):
+        for i in range(self.start_page, self.end_page+1):
             html_page = self.get_html_page(i)
             page_links = self.get_all_links_for_page(html_page)
-            sleep(randint(12, 20))
+            sleep(randint(1, 2))
             for link in page_links:
                 self.links.append(link)
 
@@ -102,4 +78,4 @@ class WebScrapper():
             bucket = client.get_bucket('ml-esme-real-estate-data')
             blob = bucket.blob("logic-immo/" + filename)
             blob.upload_from_string(ad_page)
-            print(filename)
+            print(filename + "has been written to GCS")
