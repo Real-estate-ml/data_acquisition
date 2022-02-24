@@ -7,6 +7,7 @@ parser.add_argument('--startpage', required=True, help='Start page number to scr
 parser.add_argument('--endpage', required=True, help='End page number to scrape')
 
 args = parser.parse_args()
+print("The webscrapping service for page {} to {} is starting...".format(args.startpage, args.endpage))
 start_page = int(args.startpage)
 end_page = int(args.endpage)
 

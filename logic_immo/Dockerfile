@@ -9,4 +9,4 @@ COPY . ./
 # Install production dependencies.
 RUN pip install -r requirements.txt
 EXPOSE 8080
-CMD ["python", "src/main.py", "--host", "0.0.0.0", "-p", "8080"]
+CMD python src/main.py --startpage $START_PAGE --endpage $END_PAGE
