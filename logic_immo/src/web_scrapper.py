@@ -76,6 +76,6 @@ class WebScrapper():
             filename = "apartment_ad_{}_{}.html".format(index, date_of_day)
             client = storage.Client()
             bucket = client.get_bucket('ml-esme-real-estate-data')
-            blob = bucket.blob("logic-immo/" + filename)
+            blob = bucket.blob("logic-immo/" + date_of_day + "/" + filename)
             blob.upload_from_string(ad_page)
             print(filename + "has been written to GCS")
