@@ -23,6 +23,7 @@ class WebScrapper():
         :return: HTML object
         :rtype: BeautifulSoup
         """
+        
         headers = {'User-Agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36'}
         current_url = self.url + "/page={}".format(str(page_number))
         page = requests.get(current_url, headers=headers)
@@ -40,6 +41,7 @@ class WebScrapper():
         headers = {'User-Agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36'}
         page = requests.get(link, headers=headers)
         return page.text
+           
 
     def set_all_pages_links(self):
         """Get all the apartment ads links
@@ -52,6 +54,9 @@ class WebScrapper():
             sleep(randint(1, 2))
             for link in page_links:
                 self.links.append(link)
+        print("Links:")
+        for link in self.links:
+            print(link)
 
 
     def get_all_links_for_page(self, html_page):
@@ -72,10 +77,10 @@ class WebScrapper():
         for index, link in enumerate(self.links, start=1):
             ad_page = self.get_apartment_ad(link)
             today = date.today()
-            date_of_day = today.strftime("%d-%m-%Y")
+            date_of_day = today.strftime("%Y-%m-%d")
             filename = "apartment_ad_{}_{}.html".format(index, date_of_day)
             client = storage.Client()
             bucket = client.get_bucket('ml-esme-real-estate-data')
-            blob = bucket.blob("logic-immo/" + date_of_day + "/" + filename)
+            blob = bucket.blob("logic-immo/raw/" + date_of_day + "/" + filename)
             blob.upload_from_string(ad_page)
             print(filename + "has been written to GCS")

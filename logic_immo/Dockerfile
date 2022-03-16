@@ -4,7 +4,10 @@ FROM python:3.9-slim
 #ENV GOOGLE_APPLICATION_CREDENTIALS path_service_account
 
 # Copy local code to the container image.
-COPY . ./
+COPY /src /src 
+COPY /test /test
+COPY *.json service_account.json
+COPY requirements.txt requirements.txt
 
 # Install production dependencies.
 RUN pip install -r requirements.txt

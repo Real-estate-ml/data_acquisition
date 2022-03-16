@@ -1,6 +1,6 @@
 from web_scrapper import WebScrapper
 import argparse
-
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--startpage', required=True, help='Start page number to scrape')

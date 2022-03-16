@@ -1,9 +1,0 @@
-Dockerfile
-*.pyc
-*.pyo
-*.pyd
-*.py
-env
-export
-__pycache__
-.pytest_cache
