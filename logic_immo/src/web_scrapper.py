@@ -37,7 +37,7 @@ class WebScrapper():
         :return: [description]
         :rtype: [type]
         """
-        sleep(randint(2, 3))
+        sleep(randint(5, 6))
         headers = {'User-Agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36'}
         page = requests.get(link, headers=headers)
         return page.text
@@ -51,7 +51,7 @@ class WebScrapper():
         for i in range(self.start_page, self.end_page+1):
             html_page = self.get_html_page(i)
             page_links = self.get_all_links_for_page(html_page)
-            sleep(randint(1, 2))
+            sleep(randint(5, 6))
             for link in page_links:
                 self.links.append(link)
         print("Links:")
