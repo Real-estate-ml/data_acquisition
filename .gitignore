@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# Export folders
+logic_immo/Ban_1060_ads/
+
+
 # Distribution / packaging
 .Python
 build/
@@ -127,3 +131,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Auth
+**/*.json
+
+**/.DS_Store
